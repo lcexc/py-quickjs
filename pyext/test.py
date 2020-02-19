@@ -15,12 +15,16 @@ code = '''import * as std from 'std';
 code1 = '(()=>{return Date.now();})();'
 
 mod_test = '''import * as m from '../lib/toolm.dll'
+import { fib } from "./fib_module.js";
 
 console.log("Hello World 你好");
 
 console.log(m.echo("Hello , 哈哈"));
 
-console.log(m.md5('123456'));'''
+console.log(m.md5('123456'));
+console.log("fib(10)=", fib(10));'''
+
+# ==================================
 
 print("work dir:", os.getcwd())
 print(qjs.eval_js(code))
