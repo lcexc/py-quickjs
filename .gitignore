@@ -1,8 +1,8 @@
+bin/
 obj/
 build/
 qjs.egg-info/
 dist/
 
-*.dll
 *.exe
 
