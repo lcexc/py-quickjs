@@ -10,47 +10,55 @@ quickjs 已经出来一段时间了,因其主要目标是linux,在windows上开�
 
 ## quickjs 说明
 
-本项目依赖于 [QuickJS Javascript Engine](https://bellard.org/quickjs/)
-
-在Windows平台上完成编译, 目前版本为 2020-01-19.
+本项目依赖于 [QuickJS Javascript Engine](https://bellard.org/quickjs/) 目前版本为 2020-01-19.
 
 使用到的源码文件(暂不考虑大数运算): `quickjs.c libunicode.c quickjs-libc.c libregexp.c cutils.c`
 
+如只想用c库,请参考 [编译指导](compile_lib.md)
 
-## 编译 quickjs 动态链接库
+## 安装 && 使用
 
-win10系统  TDM-GCC-64编译器
+### Windows
 
-*libqjs.c 文件 实现了 `eval_buf` 和 `eval_file` 函数*
+目前预编译了3.6 3.7, 其他版本自行编译参考 [编译指导](compile_lib.md)
 
-在`MinGW Command Prompt` 里依次运行 `libqjs_compile.bat` `module_ex_compile.bat` 即可完成编译
+下载 qjs-1.0-cpXX-cpXXm-win_amd64.whl
 
-生成的dll在lib文件夹里, 例程在bin文件夹下
+执行 `pip install qjs-xxx.whl` 完成安装
 
-在bin文件夹下打开cmd, 执行下面命令即可看到结果(中文乱码是终端问题,git-shell显示正常).
-
-```
-examples_libqjs_eval_file.exe ..\examples\hello.js
-
-examples_use_module.exe
+### Linux
 
 ```
+git clone https://github.com/lcexc/py-quickjs.git
 
-## Python 扩展编译及使用
+cd py-quickjs
 
-扩展源码位于pyext目录,目前只进行了简单封装,支持一个函数 `eval_js(code)`
+sudo python setup.py install
 
-在`MinGW Command Prompt` 里运行`python setup.py build -f -c mingw32`即可编译(python3.6版本已经编译好)
 
-编译后的pyd文件在 `build\lib.win-amdxx-3.x` 将其拷贝到pyaxt目录 同时把libqjs.dll toolm.dll 文件也拷贝到该目录.
+```
+### 使用
 
-执行 `python test.py` 即可.
+目前只进行了简单封装,支持一个函数 `eval_js(code)`
 
+```
+import qjs
+
+js_code = '''
+    (()=>{
+        console.log("Hello World");
+        return "Current TimeStamp: " + Date.now()
+    })();
+'''
+
+rt = qjs.eval_js(js_code)
+print(rt)
+
+```
 
 ### 注意事项
 
 因为quickjs 执行有两种模式 `JS_EVAL_TYPE_MODULE` 和  `JS_EVAL_TYPE_GLOBAL`
-
 global能直接获取返回值, 如果文件有导入语句,会以module模式运行,无法获取返回值,所以要获取返回值需要按以下格式书写:
 
 ```
@@ -64,6 +72,10 @@ import xxx
 
 ```
 该方式将返回值放到全局变量 `_r` 执行完后自动将该值传回py
+
+**test.py 里有几个例子,如果使用第三方js库(dll) 需要把lib下的libqjs.dll放到test.py同目录**
+
+出现类似问题 `could not load module filename 'xxx.dll' as shared library, ERR code: 126` 是dll导入失败,请仔细检查路径
 
 ## 存在问题
 

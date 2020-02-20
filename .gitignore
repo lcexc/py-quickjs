@@ -1,6 +1,8 @@
 obj/
+build/
+qjs.egg-info/
+dist/
 
-pyext/build/
 *.dll
 *.exe
 
